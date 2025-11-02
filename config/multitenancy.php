@@ -77,7 +77,7 @@ return [
 
         'tenants' => [
             'driver' => 'eloquent',
-            'model'  => App\Models\Saas\Tenant::class,
+            'model'  => App\Models\Tenant::class,
         ],
 
         // 'backup' => [

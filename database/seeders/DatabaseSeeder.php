@@ -3,10 +3,10 @@
 namespace Database\Seeders;
 
 use App\Enums\Role as EnumsRole;
-use App\Models\Saas\Permission as SaasPermission;
-use App\Models\Saas\Role as SaasRole;
-use App\Models\Saas\Tenant;
-use App\Models\Saas\User;
+use App\Models\Permission;
+use App\Models\Role;
+use App\Models\Tenant;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -67,7 +67,7 @@ class DatabaseSeeder extends Seeder
                         ! str_starts_with($name, 'telescope.') && // Telescope (if enabled)
                         ! str_starts_with($name, 'livewire.')           // Livewire internal
                     ) {
-                        SaasPermission::firstOrCreate([
+                        Permission::firstOrCreate([
                             'name'      => $name,
                             'tenant_id' => $tenant->id,
                         ]);
@@ -76,18 +76,18 @@ class DatabaseSeeder extends Seeder
 
                 // Create roles from enum (tenant scoped)
                 foreach (EnumsRole::cases() as $roleCase) {
-                    SaasRole::firstOrCreate([
+                    Role::firstOrCreate([
                         'name'      => $roleCase->value,
                         'tenant_id' => $tenant->id,
                     ]);
                 }
 
                 // Assign roles & permissions
-                $tenantRole = SaasRole::where('name', EnumsRole::TENANT->value)->where('tenant_id', $tenant->id)->first();
-                $memberRole = SaasRole::where('name', EnumsRole::MEMBER->value)->where('tenant_id', $tenant->id)->first();
+                $tenantRole = Role::where('name', EnumsRole::TENANT->value)->where('tenant_id', $tenant->id)->first();
+                $memberRole = Role::where('name', EnumsRole::MEMBER->value)->where('tenant_id', $tenant->id)->first();
 
                 if ($tenantRole) {
-                    $tenantPermissions = SaasPermission::where('tenant_id', $tenant->id)
+                    $tenantPermissions = Permission::where('tenant_id', $tenant->id)
                         ->pluck('id')
                         ->toArray();
 
@@ -96,7 +96,7 @@ class DatabaseSeeder extends Seeder
                 }
 
                 if ($memberRole) {
-                    $memberPermissions = SaasPermission::where('tenant_id', $tenant->id)
+                    $memberPermissions = Permission::where('tenant_id', $tenant->id)
                         ->whereIn('name', [
                             'users.index',
                             'users.show',
