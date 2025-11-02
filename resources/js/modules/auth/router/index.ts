@@ -1,11 +1,11 @@
 export default [
   {
     path: '',
-    name: 'Login',
-    component: () => import('@/modules/auth/views/LoginView.vue'),
+    name: 'Authentication',
+    component: () => import('@/modules/auth/views/AuthView.vue'),
     meta: {
-      title: 'Login - Login Here',
-      description: 'Login View'
+      title: 'Authentication - Login | Register Here',
+      description: 'Authentication View'
     }
   }
 ]

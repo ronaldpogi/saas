@@ -28,6 +28,8 @@ class RegisterRequest extends FormRequest
 
         return [
             // FOR USER TABLE
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name'  => ['required', 'string', 'max:255'],
             'email' => [
                 'required',
                 'email',

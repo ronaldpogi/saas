@@ -1,13 +1,26 @@
 import { useToastStore } from '@/store/toastStore'
-import { useSaasAuthStore } from '@/modules/saas/store/saasAuthSore'
+import { useAuthStore } from '@/modules/auth/store/authStore'
 import axios from 'axios'
 
 const subdomain = window.location.hostname.split('.')[0] + '.'
 
+// Detect if we're on bare localhost — if so, remove duplicate "localhost.localhost"
+const isLocalhost = window.location.hostname === 'localhost'
+const computedBaseURL = isLocalhost
+  ? `http://localhost.localhost/api` // your requested behavior
+  : `http://${subdomain}localhost/api`
+
+const token = document
+  .querySelector('meta[name="csrf-token"]')
+  ?.getAttribute('content')
+
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+if (token) axios.defaults.headers.common['X-CSRF-TOKEN'] = token
+
+axios.defaults.withCredentials = true
+
 const api = axios.create({
-  // baseURL: import.meta.env.VITE_API_URL || `https://${subdomain}api.ronald-bibon.click/api`,
-  baseURL: import.meta.env.VITE_API_URL || `http://${subdomain}localhost/api`,
-  // baseURL: import.meta.env.VITE_API_URL || `https://tenant-one.api.ronald-bibon.click/api`,
+  baseURL: import.meta.env.VITE_API_URL || computedBaseURL,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json'
@@ -16,7 +29,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const auth = useSaasAuthStore()
+    const auth = useAuthStore()
     if (auth.token) {
       config.headers.Authorization = `Bearer ${auth.token}`
     }

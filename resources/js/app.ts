@@ -9,8 +9,8 @@ import router from './router'
 
 import { Icon } from '@iconify/vue'
 
-import EmptyLayout from './components/layouts/EmptyLayout.vue'
-import DefaultLayout from './components/layouts/DefaultLayout.vue'
+import EmptyLayout from '@/components/layouts/EmptyLayout.vue'
+import DefaultLayout from '@/components/layouts/DefaultLayout.vue'
 
 const app = createApp(App)
 const pinia = createPinia()
